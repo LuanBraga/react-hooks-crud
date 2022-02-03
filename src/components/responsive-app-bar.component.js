@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 import {
-    useNavigate,
+  useNavigate,
 } from "react-router-dom";
 
 
@@ -32,9 +32,21 @@ const ResponsiveAppBar = props => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = pageURL => {
-    console.log(pageURL);
-    // navigate(pageURL);
+  const handleCloseNavMenu = e => {
+
+    switch (e.target.firstChild.data) {
+      case 'Tutorials':
+        navigate('/tutorials');
+        break;
+    
+      case 'Add':
+        navigate('/add');
+        break;
+      
+      default:
+        break;
+    }
+    
     setAnchorElNav(null);
   };
 
@@ -84,19 +96,11 @@ const ResponsiveAppBar = props => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {/* {pages.map((page) => (
+              {pages.map((page) => (
                 <MenuItem key={page} onClick={() => handleCloseNavMenu('')}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-              ))} */}
-
-                <MenuItem key={pages[0]} onClick={() => handleCloseNavMenu('/tutorials')}>
-                  <Typography textAlign="center">{pages[0]}</Typography>
-                </MenuItem>
-
-                <MenuItem key={pages[1]} onClick={() => handleCloseNavMenu('/add')}>
-                  <Typography textAlign="center">{pages[1]}</Typography>
-                </MenuItem>
+              ))}
             </Menu>
           </Box>
           <Typography
