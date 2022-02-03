@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid, List, ListItem, ListItemText, ListItemButton} from "@mui/material";
+import { Button, Grid, List, ListItem, ListItemText, ListItemButton, Card, CardActions, CardContent, Typography} from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
@@ -48,7 +48,7 @@ const TutorialsList = () => {
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
+        marginLeft: theme.spacing(0),
         width: 'auto',
     },
     }));
@@ -103,26 +103,50 @@ const TutorialsList = () => {
                 </Search>
             </Grid>
             
-            <Grid item xs={10}>
+            <Grid item xs={7}>
                 <Box>
                     <List>
                         {
                             tutorials.map((tutorial, index) => (
-                                <ListItemButton
-                                    selected={selectedIndex === 0}
-                                    onClick={(event) => handleListItemClick(event, 0)}
-                                    key={index}
-                                >
-                                    <ListItemText primary={tutorial.title} />
-                                </ListItemButton>
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                        selected={selectedIndex === 0}
+                                        onClick={(event) => handleListItemClick(event, 0)}
+                                        key={index}
+                                    >
+
+                                        <ListItemText primary={tutorial.title} />
+                                    </ListItemButton>
+                                </ListItem>
                             ))
                         }
                     </List>
                 </Box>
             </Grid>
 
-            <Grid item xs={2}>
-                    <h1>teste</h1>
+            <Grid item xs={5}>
+                <Card>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                            Word of the Day
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            be nev o lent
+                        </Typography>
+                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                            adjective
+                        </Typography>
+                        <Typography variant="body2">
+                            well meaning and kindly.
+                            <br />
+                            {'"a benevolent smile"'}
+                        </Typography>
+                    </CardContent>
+                    
+                    <CardActions>
+                        <Button size="small">Learn More</Button>
+                    </CardActions>
+                </Card>
             </Grid>
 
             <Grid item xs={12}>
