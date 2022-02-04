@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid, List, ListItem, ListItemText, ListItemButton, Card, CardActions, CardContent, Typography} from "@mui/material";
+import { Button, Grid, List, ListItem, ListItemText, ListItemButton, Card, CardActions, CardContent, Typography } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
@@ -12,13 +12,21 @@ const TutorialsList = () => {
     const [tutorials, setTutorials] = useState([]);
     const [currentTutorial, setCurrentTutorial] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
-    const [searchTitle, setSearchTitle] = useState('');
-
-    const [selectedIndex, setSelectedIndex] = useState(1);
+    const [searchTitle, setSearchTitle] = useState("");
 
     useEffect(() => {
         retrieveTutorials();
     }, []);
+
+    const setActiveTutorial = (tutorial, index) => {
+        setCurrentTutorial(tutorial);
+        setCurrentIndex(index);
+    }
+
+    const handleChangeSearchTitle = (e) => {
+        const searchTitle = e.target.value;
+        setSearchTitle(searchTitle);
+    }
 
     const retrieveTutorials = () => {
         TutorialDataService.getAll()
@@ -31,8 +39,15 @@ const TutorialsList = () => {
           });
     };
 
-    const handleListItemClick = (event, index) => {
-        setSelectedIndex(index);
+    const findByTitle = () => {
+        TutorialDataService.findByTitle(searchTitle)
+            .then(res => {
+                setTutorials(res.data);
+                console.log(res.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
     }
 
     const Search = styled('div')(({ theme }) => ({
@@ -78,25 +93,35 @@ const TutorialsList = () => {
             },
           },
         },
-    }));   
+    }));
+
+    const StyledCard = styled(Card)(({ theme }) => ({
+        backgroundColor: '#dae9f8',
+        borderRadius: '0',
+    }));
 
     return(
-        <Grid container spacing={0}>
+        <Grid container spacing={1}>
             <Grid item xs={12}>
                 <Search>
                     <SearchIconWrapper>
                         <SearchIcon />
                     </SearchIconWrapper>
 
-                    <StyledInputBase 
-                        placeholder="Search"
+                    <StyledInputBase
+                        value={searchTitle}
+                        onChange={handleChangeSearchTitle}
+                        placeholder="Search by title"
                         inputProps={{'aria-label': 'search'}}
+                        autoFocus={true}
                     />
 
                     <Button
                         size="small"
                         variant="outlined"
                         style={{marginRight: '1rem'}}
+                        onClick={findByTitle}
+                        type="button"
                     >
                         Search
                     </Button>
@@ -106,15 +131,16 @@ const TutorialsList = () => {
             <Grid item xs={7}>
                 <Box>
                     <List>
-                        {
+                        <Typography sx={{ fontSize: 20 }} variant="h1" color="black">
+                            Tutorials List:
+                        </Typography>
+                        {   tutorials &&
                             tutorials.map((tutorial, index) => (
-                                <ListItem disablePadding>
+                                <ListItem key={index} disablePadding>
                                     <ListItemButton
-                                        selected={selectedIndex === 0}
-                                        onClick={(event) => handleListItemClick(event, 0)}
-                                        key={index}
+                                        selected={currentIndex === index}
+                                        onClick={() => setActiveTutorial(tutorial, index)}
                                     >
-
                                         <ListItemText primary={tutorial.title} />
                                     </ListItemButton>
                                 </ListItem>
@@ -125,28 +151,39 @@ const TutorialsList = () => {
             </Grid>
 
             <Grid item xs={5}>
-                <Card>
+                {currentTutorial ? (
+                    <StyledCard>
+                        <CardContent>
+                            <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
+                                Tutorial info
+                            </Typography>
+
+                            <Typography sx={{ fontSize: 14 }} variant="h1" color="black" component="div">
+                                <strong>Title:</strong> {currentTutorial.title}
+                            </Typography>
+
+                            <Typography sx={{ mb: 1.5, mt: 1.5}} color="black" align='justify'>
+                                <strong>Description:</strong> {currentTutorial.description}
+                            </Typography>
+
+                            <Typography color="black" variant="body2">
+                                <strong>Status:</strong> {currentTutorial.published ? 'Published' : 'Pending'}
+                            </Typography>
+                        </CardContent>
+                        
+                        <CardActions>
+                            <Button size="small">Edit</Button>
+                        </CardActions>
+                    </StyledCard>
+                ): (
+                    <StyledCard>
                     <CardContent>
-                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                            Word of the Day
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                            be nev o lent
-                        </Typography>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                            adjective
-                        </Typography>
-                        <Typography variant="body2">
-                            well meaning and kindly.
-                            <br />
-                            {'"a benevolent smile"'}
+                        <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
+                            Please, Click on a Tutorial...
                         </Typography>
                     </CardContent>
-                    
-                    <CardActions>
-                        <Button size="small">Learn More</Button>
-                    </CardActions>
-                </Card>
+                </StyledCard>
+                )}
             </Grid>
 
             <Grid item xs={12}>
