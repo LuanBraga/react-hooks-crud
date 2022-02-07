@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid, List, ListItem, ListItemText, ListItemButton, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { Button, Grid, List, ListItem, ListItemText, ListItemButton, Card, CardActions, CardContent, Typography, Link } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
@@ -7,12 +7,15 @@ import Box from '@mui/material/Box';
 import { useEffect, useState } from "react";
 
 import TutorialDataService from "../services/TutorialService";
+import { useNavigate } from 'react-router-dom';
 
 const TutorialsList = () => {
     const [tutorials, setTutorials] = useState([]);
     const [currentTutorial, setCurrentTutorial] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [searchTitle, setSearchTitle] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         retrieveTutorials();
@@ -48,6 +51,10 @@ const TutorialsList = () => {
             .catch(e => {
                 console.log(e);
             });
+    }
+
+    const handleTutorialDetail = (id) => {
+        navigate(`/tutorials/${id}`);
     }
 
     const Search = styled('div')(({ theme }) => ({
@@ -172,23 +179,29 @@ const TutorialsList = () => {
                         </CardContent>
                         
                         <CardActions>
-                            <Button size="small">Edit</Button>
+                            <Button
+                                variant="contained" 
+                                size="small"
+                                onClick={() => handleTutorialDetail(currentTutorial.id)}
+                            >
+                                Edit
+                            </Button>
                         </CardActions>
                     </StyledCard>
                 ): (
                     <StyledCard>
-                    <CardContent>
-                        <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
-                            Please, Click on a Tutorial...
-                        </Typography>
-                    </CardContent>
-                </StyledCard>
+                        <CardContent>
+                            <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
+                                Please, Click on a Tutorial...
+                            </Typography>
+                        </CardContent>
+                    </StyledCard>
                 )}
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                     <h1>teste</h1>
-            </Grid>
+            </Grid> */}
             
         </Grid>
     );
